@@ -1,3 +1,4 @@
+// this file handles all the routes that associated with customer
 const {Customer, validate} = require('../models/customer'); 
 const mongoose = require('mongoose');
 const express = require('express');

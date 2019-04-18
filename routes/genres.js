@@ -1,7 +1,8 @@
+// this file handles all the routes that associated with genres
 // restructering the files to make things more maintainable ,put all the routes in different .js file in route folder
 const mongoose=require('mongoose');
 const express=require('express');
-const {Genre, validate} = require('../models/genre');
+const {Genre, validate} = require('../models/genre');// importing the models and genre function to the file in object fashion
 const router=express.Router();
 
 // req is request and res is response, and we have made the function as async
@@ -10,22 +11,29 @@ const router=express.Router();
     res.send(genres);
   });
   
-  // entering a new genre
+  //entering a new genre
   router.post('/', async(req, res) => {
       // since we cannot trust the users so we are validating the input and hence we are interested in the returned objects' error feildds value so instead of writing const resV= fun() ; const resB=resV['error], we can do tha in one simple way const {error}= fun()
-      const { error } = validateGenre(req.body); 
+      const { error } = validate(req.body); 
       if (error) return res.status(400).send(error.details[0].message);
   
     // genre is being made let because we have to set its value to something that has been set by the database
-    let genre =new Genre({name: req.body.name});
-    genre=await genre.save();
+    try{
+      let genre =new Genre({name: req.body.name});
+      genre=await genre.save();
+      res.send(genre);      
+    }
+    catch(err)
+    {
+      console.log(err);
+    }
     // return the new genre made
-    res.send(genre);
   });
   
+ 
   // updation of the genre
   router.put('/:id', async (req, res) => {
-    const { error } = validateGenre(req.body); 
+    const { error } = validate(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
   
     const genre = await Genre.findByIdAndUpdate(req.params.id, { name: req.body.name }, {

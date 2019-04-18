@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
 
+// defining the schema within the params and then the model of genre type
 const Genre = mongoose.model('Genre', new mongoose.Schema({
   name: {
     type: String,

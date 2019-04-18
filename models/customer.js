@@ -1,6 +1,8 @@
+// better to move the stuffs like db models to another file
 const Joi = require('joi');
 const mongoose = require('mongoose');
 
+// defining the schema within the params and then the model of customer type
 const Customer = mongoose.model('Customer', new mongoose.Schema({
   name: {
     type: String,
