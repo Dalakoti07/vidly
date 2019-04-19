@@ -1,4 +1,4 @@
-// we have imported the joi and express module
+const config=require('config');
 const Joi = require('joi');
 Joi.objectId=require('joi-objectid')(Joi);
 const mongoose=require('mongoose');
@@ -11,6 +11,11 @@ const auth=require('./routes/auth');
 const users=require('./routes/users');
 const app = express();
 
+if(!config.get('jwtPrivateKey'))
+{
+    console.log('Fatal error : jwtPrivateKey is not defined ');
+    process.exit(1);
+}
 // .connect returns the promise and that need to be handled carefully
 mongoose.connect('mongodb://localhost/vidly')
     .then(()=> console.log('connected to the mongodb database'))
