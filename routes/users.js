@@ -1,3 +1,5 @@
+const jwt=require('jsonwebtoken');
+const config=require('config');
 const bcrypt=require('bcrypt');
 const _=require('lodash');
 const mongoose=require('mongoose');
@@ -19,7 +21,9 @@ const router=express.Router();
     user.password=await bcrypt.hash(user.password,salt);// salt is the random string that is prefix or suffix the password    await user.save();
     // lodash has .pick which selects the parms feilds
     await user.save();
-    res.send(_.pick(user,['_id','name','email']));      
+    // when the user has signed up we would authenticate and then can directly use the service rather than sigin again
+    const token=user.generateAuthToken();
+    res.header('x-auth-token',token).send(_.pick(user,['_id','name','email']));      
 });
 
 module.exports=router;
