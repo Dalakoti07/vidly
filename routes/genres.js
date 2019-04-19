@@ -4,6 +4,8 @@ const mongoose=require('mongoose');
 const express=require('express');
 const {Genre, validate} = require('../models/genre');// importing the models and genre function to the file in object fashion
 const router=express.Router();
+const admin=require('../middleware/admin');
+const auth=require('../middleware/auth');
 
 // req is request and res is response, and we have made the function as async
   router.get('/', async(req, res) => {
@@ -11,8 +13,8 @@ const router=express.Router();
     res.send(genres);
   });
   
-  //entering a new genre
-  router.post('/', async(req, res) => {
+  //entering a new genre, auth would be checked before adding data to the database
+  router.post('/', auth,async(req, res) => {
       // since we cannot trust the users so we are validating the input and hence we are interested in the returned objects' error feildds value so instead of writing const resV= fun() ; const resB=resV['error], we can do tha in one simple way const {error}= fun()
       const { error } = validate(req.body); 
       if (error) return res.status(400).send(error.details[0].message);
@@ -46,7 +48,7 @@ const router=express.Router();
   });
     
   // deletion of a genre 
-  router.delete('/:id', async(req, res) => {
+  router.delete('/:id', [auth,admin],async(req, res) => {
     const genre =await Genre.findByIdAndRemove(req.params.id);
     if (!genre) return res.status(404).send('The genre with the given ID was not found.');
   
