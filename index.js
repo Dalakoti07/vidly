@@ -1,10 +1,12 @@
 // we have imported the joi and express module
+const Joi = require('joi');
+Joi.objectId=require('joi-objectid')(Joi);
 const mongoose=require('mongoose');
 const genres=require('./routes/genres');
 const customers=require('./routes/customers');
 const express = require('express');
 const movies = require('./routes/movies');
-const rentals = require('./routes/rentals');
+const rentals = require('./routes/rental');
 const app = express();
 
 // .connect returns the promise and that need to be handled carefully

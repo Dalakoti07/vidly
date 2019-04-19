@@ -43,6 +43,7 @@ router.post('/', async (req, res) => {
   movie.save();
   // there is chance that server may go down and things donot work that way so we need to provide atomicity and no sql donot provide any provision to do so, thus we must have something and we have a fawn package 
   So we would be using Fawn for this purpose
+  this Fawn create a new collection in database and then performs atomic tasks
   */
   try
   {
