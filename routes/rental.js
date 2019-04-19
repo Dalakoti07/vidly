@@ -3,7 +3,10 @@ const {Movie} = require('../models/movie');
 const {Customer} = require('../models/customer'); 
 const mongoose = require('mongoose');
 const express = require('express');
+const Fawn=require('fawn');
 const router = express.Router();
+
+Fawn.init(mongoose);
 
 router.get('/', async (req, res) => {
   const rentals = await Rental.find().sort('-dateOut');
@@ -34,12 +37,27 @@ router.post('/', async (req, res) => {
       dailyRentalRate: movie.dailyRentalRate
     }
   });
-  rental = await rental.save();
+  /*rental = await rental.save();
 
   movie.numberInStock--;
   movie.save();
-  
-  res.send(rental);
+  // there is chance that server may go down and things donot work that way so we need to provide atomicity and no sql donot provide any provision to do so, thus we must have something and we have a fawn package 
+  So we would be using Fawn for this purpose
+  */
+  try
+  {
+    new Fawn.Task()
+    .save('rentals',rental)
+    .update('movies',{_id:movie._id},{
+        $inc:{numberInStock: -1}
+    })
+    .run();
+    res.send(rental);
+  }
+  catch(ex)
+  {
+    res.status(500).send('Something failed');
+  }
 });
 
 router.get('/:id', async (req, res) => {
