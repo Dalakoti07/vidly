@@ -1,3 +1,4 @@
+const jwt=require('jsonwebtoken');
 const Joi=require('Joi');
 const bcrypt=require('bcrypt');
 const _=require('lodash');
@@ -17,8 +18,9 @@ const router=express.Router();
 
     const validPassword=await bcrypt.compare(req.body.password,user.password);
     if(!validPassword) return res.status(400).send('Invalid password');
-
-    res.send(true);
+    // sending a jsonwebtoken 
+    const token=jwt.sign({_id:user._id},'jwtPrivateKey');
+    res.send(token);
 });
 function validate(req) {
     const schema = {
