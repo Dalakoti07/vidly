@@ -1,4 +1,5 @@
 const winston=require('winston');
+require('winston-mongodb');
 require('express-async-errors');
 const error=require('./middleware/error');
 const config=require('config');
@@ -15,6 +16,7 @@ const users=require('./routes/users');
 const app = express();
 
 winston.add(winston.transports.File,{filename:"logfile.log"});
+winston.add(winston.transports.MongoDB,{db:'mongodb://localhost/vidly'});
 
 if(!config.get('jwtPrivateKey'))
 {
