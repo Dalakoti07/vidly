@@ -5,9 +5,9 @@ const config=require('config');
 const Joi = require('joi');
 Joi.objectId=require('joi-objectid')(Joi);
 const express = require('express');
-const mongoose=require('mongoose');
 const app = express();
 require('./startups/routes')(app);// this require returns function and we pass app to it and call that function 
+require('./startups/db')();
 /*Winston can't log the exceptions outside the route handlers thus we use process emitters that would log message to console and then use winston to log the same message */
 /*
 process.on('uncaughtException',(ex)=>{
@@ -42,9 +42,6 @@ if(!config.get('jwtPrivateKey'))
 //p.then(()=>console.log('Done'));
 
 // .connect returns the promise and that need to be handled carefully
-mongoose.connect('mongodb://localhost/vidly')
-    .then(()=> console.log('connected to the mongodb database'))
-    .catch(err=> console.log('could not connnect to the database'));
 
     // parsing of the JSON object is not in built in javascript thus we have written line 6
 
