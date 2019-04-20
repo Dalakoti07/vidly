@@ -1,4 +1,3 @@
-const config=require('config');
 const Joi = require('joi');
 Joi.objectId=require('joi-objectid')(Joi);
 const express = require('express');
@@ -7,12 +6,8 @@ const app = express();
 require('./startups/routes')(app);// this require returns function and we pass app to it and call that function 
 require('./startups/db')();
 require('./startups/logging')();
+require('./startups/config')();
 
-if(!config.get('jwtPrivateKey'))
-{
-    console.log('Fatal error : jwtPrivateKey is not defined ');
-    process.exit(1);
-}
 //error middleware, after all the routes
 app.use(error);
 // use port environemnt variable of the host ,if it is unavailable then use port 3000
