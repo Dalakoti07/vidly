@@ -1,3 +1,4 @@
+const error=require('./middleware/error');
 const config=require('config');
 const Joi = require('joi');
 Joi.objectId=require('joi-objectid')(Joi);
@@ -32,6 +33,8 @@ app.use('/api/rentals', rentals);
 app.use('/api/users',users);
 app.use('/api/auth',auth);
 
+//error middleware, after all the routes
+app.use(error);
 // use port environemnt variable of the host ,if it is unavailable then use port 3000
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));

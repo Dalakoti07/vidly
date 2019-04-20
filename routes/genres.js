@@ -8,9 +8,15 @@ const admin=require('../middleware/admin');
 const auth=require('../middleware/auth');
 
 // req is request and res is response, and we have made the function as async
-  router.get('/', async(req, res) => {
-    const genres=await Genre.find().sort('name');
-    res.send(genres);
+  router.get('/', async(req, res,next) => {
+    try{
+      const genres=await Genre.find().sort('name');
+      res.send(genres);
+    }
+    catch(ex)
+    {
+      next(ex);
+    }
   });
   
   //entering a new genre, auth would be checked before adding data to the database
