@@ -18,11 +18,20 @@ const app = express();
 winston.add(winston.transports.File,{filename:"logfile.log"});
 winston.add(winston.transports.MongoDB,{db:'mongodb://localhost/vidly'});
 
+/*Winston can't log the exceptions outside the route handlers thus we use process emitters that would log message to console and then use winston to log the same message */
+
+process.on('uncaughtException',(ex)=>{
+    console.log('We got an unexception error');
+    winston.error(ex.message,ex);
+});
+
 if(!config.get('jwtPrivateKey'))
 {
     console.log('Fatal error : jwtPrivateKey is not defined ');
     process.exit(1);
 }
+//throw new Error('Something failed during startup');
+
 // .connect returns the promise and that need to be handled carefully
 mongoose.connect('mongodb://localhost/vidly')
     .then(()=> console.log('connected to the mongodb database'))
