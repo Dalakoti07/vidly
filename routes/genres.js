@@ -1,5 +1,6 @@
 // this file handles all the routes that associated with genres
 // restructering the files to make things more maintainable ,put all the routes in different .js file in route folder
+const asyncMiddleware=require('../middleware/async');
 const mongoose=require('mongoose');
 const express=require('express');
 const {Genre, validate} = require('../models/genre');// importing the models and genre function to the file in object fashion
@@ -7,20 +8,15 @@ const router=express.Router();
 const admin=require('../middleware/admin');
 const auth=require('../middleware/auth');
 
+
 // req is request and res is response, and we have made the function as async
-  router.get('/', async(req, res,next) => {
-    try{
+  router.get('/', asyncMiddleware(async(req, res) => {
       const genres=await Genre.find().sort('name');
       res.send(genres);
-    }
-    catch(ex)
-    {
-      next(ex);
-    }
-  });
+  }));
   
   //entering a new genre, auth would be checked before adding data to the database
-  router.post('/', auth,async(req, res) => {
+  router.post('/', auth,asyncMiddleware(async(req, res) => {
       // since we cannot trust the users so we are validating the input and hence we are interested in the returned objects' error feildds value so instead of writing const resV= fun() ; const resB=resV['error], we can do tha in one simple way const {error}= fun()
       const { error } = validate(req.body); 
       if (error) return res.status(400).send(error.details[0].message);
@@ -36,11 +32,11 @@ const auth=require('../middleware/auth');
       console.log(err);
     }
     // return the new genre made
-  });
+  }));
   
  
   // updation of the genre
-  router.put('/:id', async (req, res) => {
+  router.put('/:id', asyncMiddleware(async (req, res) => {
     const { error } = validate(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
   
@@ -51,7 +47,7 @@ const auth=require('../middleware/auth');
     if (!genre) return res.status(404).send('The genre with the given ID was not found.');
     
     res.send(genre);
-  });
+  }));
     
   // deletion of a genre 
   router.delete('/:id', [auth,admin],async(req, res) => {
