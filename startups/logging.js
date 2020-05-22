@@ -5,6 +5,7 @@ require('winston-mongodb');
 module.exports=function()
 {
     winston.handleExceptions(
+        // we saying that we want to to use two transport methods to log the errors, one in window terminal and another on file system
         new winston.transports.Console({colorize:true,prettyPrint:true}),
         new winston.transports.File({filename:'uncaughtExceptions.log'}));
     process.on('unhandledRejection',(ex)=>{
